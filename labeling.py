@@ -47,7 +47,10 @@ else:
 #5.redirecting using //
 doubleSlash_redirecting=0
 #6.Adding Prefix or Suffix Separated by (-) to the Domain
-prefix_suffix=0
+if '-' in url_tokens[1]:
+    prefix_suffix=1
+else:
+    prefix_suffix=-1
 #7.Sub Domain and Multi Sub Domains
 having_Sub_Domain=0
 #8.HTTPS (Hyper Text Transfer Protocol with Secure Sockets Layer)
