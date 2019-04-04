@@ -4,7 +4,9 @@
 #0-suspecious
 #-1-attribute absent( legitimate)
 
-# 2/30.............................status
+# 5/30.............................status
+import requests
+from bs4 import BeautifulSoup
 '''
 import requests 
 
@@ -45,7 +47,13 @@ if '@' in url:
 else:
     having_at=-1
 #5.redirecting using //
-doubleSlash_redirecting=0
+position= url.rfind("//")
+print position
+if(position<7):
+    doubleSlash_redirecting=-1
+else:
+    doubleSlash_redirecting=1
+
 #6.Adding Prefix or Suffix Separated by (-) to the Domain
 if '-' in url_tokens[1]:
     prefix_suffix=1
@@ -54,7 +62,11 @@ else:
 #7.Sub Domain and Multi Sub Domains
 having_Sub_Domain=0
 #8.HTTPS (Hyper Text Transfer Protocol with Secure Sockets Layer)
-sSLfinal_State=0
+if(url_tokens[0]=='https:'):
+    sSLfinal_State=-1
+else:
+    sSLfinal_State=1 
+
 #9.Domain Registration Length
 Domain_registeration_length=0
 #10.Favicon
