@@ -4,7 +4,7 @@
 #0-suspecious
 #-1-attribute absent( legitimate)
 
-# 5/30.............................status
+# 8/30.............................status
 import requests
 from bs4 import BeautifulSoup
 import re
