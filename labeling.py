@@ -4,10 +4,18 @@
 #0-suspecious
 #-1-attribute absent( legitimate)
 
-# 8/30.............................status
+# 11/30.............................status
 import requests
 from bs4 import BeautifulSoup
 import re
+import whois
+import time
+from datetime import  datetime
+
+import urllib.request #-----this problem can be solved after upgrading to python 3
+from urllib.parse import urlparse
+from urllib.error import HTTPError
+
 '''
 import requests 
 
@@ -95,13 +103,53 @@ else:
     sSLfinal_State=1 
 
 #9.Domain Registration Length
-Domain_registeration_length=0
+dns = 0
+try:
+    domain_name = whois.whois(urlparse(url).netloc)
+except:
+    dns = 1
+        
+if dns == 1:
+    Domain_registeration_length=1   #phishing
+else:
+    expiration_date = domain_name.expiration_date
+    today = time.strftime('%Y-%m-%d')
+    today = datetime.strptime(today, '%Y-%m-%d')
+    if expiration_date is None:
+        Domain_registeration_length=1 #it is phishing
+        
+    elif type(expiration_date) is list or type(today) is list :
+        Domain_registeration_length=0   #If it is a type of list then we can't select a single value from list. So,it is regarded as suspected website  
+    else:
+        creation_date = domain_name.creation_date
+        expiration_date = domain_name.expiration_date
+        if (isinstance(creation_date,str) or isinstance(expiration_date,str)):
+            try:
+                creation_date = datetime.strptime(creation_date,'%Y-%m-%d')
+                expiration_date = datetime.strptime(expiration_date,"%Y-%m-%d")
+            except:
+                Domain_registeration_length=0                
+        registration_length = abs((expiration_date - today).days)
+        if registration_length / 365 <= 1:
+            Domain_registeration_length=1             #phishing
+        else:
+            Domain_registeration_length=-1             # legitimate
 #10.Favicon
 Favicon=0
 #11.Using Non-Standard Port
 port=0
 #12.The Existence of HTTPs Token in the Domain Part of the URL
-HTTPS_token=0
+mat=re.search('https://|http://',url)
+try:
+    if mat.start(0)==0 and mat.start(0) is not None:
+        url=url[mat.end(0):]
+        mat=re.search('http|https',url)
+        if mat:
+            HTTPS_token=1      #phishing      
+        else:
+            HTTPS_token=-1  #legit
+except:
+    HTTPS_token=1      #phishing 
 #13.Request URL
 Request_URL=0
 #14.URL of Anchor
@@ -126,7 +174,32 @@ popUpWidnow=0
 # 23.IFrame Redirection
 Iframe=0
 # 24.Age of Domain
-age_of_domain=0
+dns = 0
+try:
+    domain_name = whois.whois(urlparse(url).netloc)
+except:
+    dns = 1
+if dns == 1:
+    age_of_domain=1 #phishing
+else:
+    creation_date = domain_name.creation_date
+    expiration_date = domain_name.expiration_date
+    if (isinstance(creation_date,str) or isinstance(expiration_date,str)):
+        try:
+            creation_date = datetime.strptime(creation_date,'%Y-%m-%d')
+            expiration_date = datetime.strptime(expiration_date,"%Y-%m-%d")
+        except:
+            age_of_domain=0      #sus
+    if ((expiration_date is None) or (creation_date is None)):
+        age_of_domain=1        #phishing
+    elif ((type(expiration_date) is list) or (type(creation_date) is list)):
+        age_of_domain=0     #sus
+    else:
+        ageofdomain = abs((expiration_date - creation_date).days)
+        if ((ageofdomain/30) < 6):
+            age_of_domain=1            #phishing
+        else:
+            age_of_domain=-1            #legit
 # 25.DNS Record
 DNSRecord=0
 # 26.Website Traffic
