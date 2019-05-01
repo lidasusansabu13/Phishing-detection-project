@@ -1,4 +1,4 @@
-from sklearn import tree
+from sklearn import svm
 from sklearn.metrics import accuracy_score
 
 import numpy as np
@@ -14,10 +14,10 @@ def load_data():
 
     outputs = training_data[:, -1]
 
-    training_inputs = inputs[:2000]
-    training_outputs = outputs[:2000]
-    testing_inputs = inputs[2000:]
-    testing_outputs = outputs[2000:]
+    training_inputs = inputs[:9000]
+    training_outputs = outputs[:9000]
+    testing_inputs = inputs[9000:]
+    testing_outputs = outputs[9000:]
 
     
     return training_inputs, training_outputs, testing_inputs, testing_outputs
@@ -31,11 +31,11 @@ if __name__ == '__main__':
     print "Training data loaded."
 
     # Create a decision tree classifier model using scikit-learn
-    classifier = tree.DecisionTreeClassifier()
-    print "Decision tree classifier created."
+    classifier = svm.SVC(kernel='linear')
+    print "Linear SVM  classifier created."
 
     print "Beginning model training."
-    # Train the decision tree classifier
+    # Train the svm classifier
     classifier.fit(train_inputs, train_outputs)
     print "Model training completed."
 
@@ -45,4 +45,4 @@ if __name__ == '__main__':
 
     # Print the accuracy (percentage of phishing websites correctly predicted)
     accuracy = 100.0 * accuracy_score(test_outputs, predictions)
-    print "The accuracy of your decision tree on testing data is: " + str(accuracy)
+    print "The accuracy of your svm on testing data is: " + str(accuracy)
